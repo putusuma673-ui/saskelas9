@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Challenge - 40 Soal Matematika SMP</title>
+<style>
+:root{--navy:#173f70;--blue:#2463a6;--bg:#f2f6fb;--ink:#172334;--green:#16834b;--red:#c43d45}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:850px;margin:24px auto;padding:16px}.hero{background:linear-gradient(135deg,#173f70,#2875b8);color:white;border-radius:18px;padding:26px;text-align:center;box-shadow:0 8px 24px #173f7025}
+.hero h1{margin:0 0 8px;font-size:clamp(25px,5vw,38px)}.hero p{margin:0;opacity:.92}
+.panel{background:white;border-radius:16px;padding:22px;margin-top:18px;box-shadow:0 4px 18px #17233410}
+label{display:block;font-weight:700;margin:12px 0 6px}input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px}
+button{border:0;border-radius:10px;padding:12px 18px;font-size:16px;font-weight:700;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:#e8eef6;color:var(--navy)}button:disabled{opacity:.45;cursor:not-allowed}
+.topline{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:700;color:#42536a}
+.track{height:9px;background:#e6edf5;border-radius:20px;overflow:hidden;margin:14px 0 20px}.bar{height:100%;background:#22a06b;width:0%;transition:width .25s}
+.tag{display:inline-block;background:#eaf2fb;color:#1d5790;padding:6px 10px;border-radius:20px;font-size:13px;font-weight:700}
+.question{font-size:20px;line-height:1.5;font-weight:700;margin:16px 0}
+.options{display:grid;gap:10px}.option{background:#f7f9fc;border:2px solid #dce4ee;text-align:left;color:#172334;font-weight:500;line-height:1.4}.option:hover{border-color:#6b9bd0}.option.selected{border-color:#2463a6;background:#eaf2fb}.option.correct{border-color:var(--green);background:#e8f7ef}.option.wrong{border-color:var(--red);background:#fff0f0}
+.feedback{margin-top:16px;padding:14px;border-radius:10px;line-height:1.5}.good{background:#e8f7ef;color:#125d37}.bad{background:#fff0f0;color:#8b252b}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px}.hidden{display:none!important}
+.result{text-align:center}.score{font-size:54px;font-weight:800;color:var(--navy);margin:12px}.small{font-size:13px;color:#64748b}.review{border-top:1px solid #e2e8f0;padding:12px 0;text-align:left;line-height:1.5}
+@media(max-width:560px){.wrap{padding:10px;margin:8px auto}.panel{padding:16px}.actions button{flex:1}.question{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="hero"><h1>🎯 MATH CHALLENGE</h1><p>40 Soal Matematika SMP • Uji kemampuanmu!</p></header>
+ <section id="start" class="panel">
+  <h2>Selamat datang, pejuang matematika!</h2>
+  <p>Isi identitas terlebih dahulu, lalu kerjakan 40 soal pilihan ganda. Setiap soal bernilai 2,5 poin.</p>
+  <label for="student">Nama siswa</label><input id="student" placeholder="Masukkan nama lengkap">
+  <label for="className">Kelas</label><input id="className" placeholder="Contoh: IX A">
+  <p class="small">Materi: SPLDV, lingkaran, panjang busur, luas juring, tembereng, tabung, kerucut, dan bola.</p>
+  <button class="primary" onclick="startGame()">Mulai permainan 🚀</button>
+ </section>
+ <section id="quiz" class="panel hidden">
+  <div class="topline"><span id="studentLabel"></span><span id="counter">Soal 1 dari 40</span></div>
+  <div class="track"><div id="progress" class="bar"></div></div>
+  <span id="topic" class="tag"></span>
+  <div id="question" class="question"></div>
+  <div id="options" class="options"></div>
+  <div id="feedback" class="feedback hidden"></div>
+  <div class="actions"><button id="next" class="primary" onclick="nextQuestion()" disabled>Soal berikutnya →</button></div>
+ </section>
+ <section id="result" class="panel result hidden">
+  <h2>🏆 Permainan selesai!</h2><div id="resultName"></div>
+  <div id="score" class="score"></div><h3 id="grade"></h3>
+  <p id="summary"></p>
+  <button class="primary" onclick="showReview()">Lihat pembahasan semua soal</button>
+  <button class="secondary" onclick="restartGame()">Main lagi</button>
+  <div id="review" class="hidden"></div>
+ </section>
+</div>
+<script>
+const questions = [
+{t:"SPLDV",q:"Harga 2 buku dan 1 pensil adalah Rp11.000. Harga 1 buku dan 2 pensil adalah Rp10.000. Berapakah harga 1 buku?",o:["Rp3.000","Rp4.000","Rp5.000","Rp6.000"],a:2,e:"Misalkan b = harga buku dan p = harga pensil. 2b + p = 11.000 dan b + 2p = 10.000. Dari penyelesaian diperoleh b = 4.000? Cek: 2(4.000)+3.000=11.000 dan 4.000+2(3.000)=10.000. Jadi harga buku Rp4.000.",fix:1},
+{t:"SPLDV",q:"Jumlah dua bilangan adalah 25 dan selisihnya 7. Bilangan yang lebih besar adalah ....",o:["9","16","18","20"],a:1,e:"Misalkan x+y=25 dan x-y=7. Jumlahkan: 2x=32, sehingga x=16."},
+{t:"SPLDV",q:"Di kantin, 3 roti dan 2 susu berharga Rp19.000. Dua roti dan 1 susu berharga Rp11.000. Harga 1 roti adalah ....",o:["Rp2.000","Rp3.000","Rp4.000","Rp5.000"],a:2,e:"3r+2s=19.000 dan 2r+s=11.000. Kalikan persamaan kedua dengan 2: 4r+2s=22.000. Selisih memberi r=3.000. Jadi jawaban yang tepat Rp3.000.",fix:1},
+{t:"SPLDV",q:"Diketahui 2x + y = 13 dan x + y = 8. Nilai x adalah ....",o:["3","4","5","6"],a:2,e:"Kurangkan persamaan pertama dengan kedua: x=13−8=5."},
+{t:"SPLDV",q:"Tiket dewasa dan anak-anak berjumlah 10 lembar. Harga tiket dewasa Rp15.000 dan anak Rp10.000. Total uang Rp120.000. Banyak tiket dewasa adalah ....",o:["2","3","4","5"],a:2,e:"Misalkan d+a=10 dan 15d+10a=120 (dalam ribuan). Substitusi a=10−d: 15d+100−10d=120, sehingga 5d=20 dan d=4."},
+{t:"Unsur Lingkaran",q:"Garis yang menghubungkan titik pusat lingkaran dengan satu titik pada lingkaran disebut ....",o:["Diameter","Jari-jari","Busur","Tali busur"],a:1,e:"Jari-jari adalah ruas garis dari titik pusat ke titik pada keliling lingkaran."},
+{t:"Unsur Lingkaran",q:"Ruas garis yang melalui titik pusat dan menghubungkan dua titik pada lingkaran disebut ....",o:["Apotema","Busur","Diameter","Juring"],a:2,e:"Diameter adalah tali busur yang melalui titik pusat dan panjangnya dua kali jari-jari."},
+{t:"Unsur Lingkaran",q:"Daerah dalam lingkaran yang dibatasi oleh dua jari-jari dan sebuah busur disebut ....",o:["Tembereng","Juring","Apotema","Tali busur"],a:1,e:"Juring merupakan daerah yang dibatasi dua jari-jari dan satu busur."},
+{t:"Unsur Lingkaran",q:"Garis dari titik pusat yang tegak lurus pada sebuah tali busur disebut ....",o:["Apotema","Diameter","Busur","Jari-jari"],a:0,e:"Apotema adalah jarak terpendek dari titik pusat ke tali busur, yaitu garis yang tegak lurus tali busur."},
+{t:"Unsur Lingkaran",q:"Bagian keliling lingkaran yang menghubungkan dua titik pada lingkaran disebut ....",o:["Juring","Tembereng","Busur","Apotema"],a:2,e:"Busur adalah bagian lengkung dari keliling lingkaran."},
+{t:"Keliling dan Luas Lingkaran",q:"Sebuah lingkaran memiliki jari-jari 7 cm. Kelilingnya (π=22/7) adalah ....",o:["22 cm","44 cm","154 cm","308 cm"],a:1,e:"K = 2πr = 2 × 22/7 × 7 = 44 cm."},
+{t:"Keliling dan Luas Lingkaran",q:"Diameter sebuah lingkaran 20 cm. Luasnya (π=3,14) adalah ....",o:["62,8 cm²","125,6 cm²","314 cm²","628 cm²"],a:2,e:"r=10 cm. L=πr²=3,14×10²=314 cm²."},
+{t:"Keliling dan Luas Lingkaran",q:"Keliling sebuah roda adalah 176 cm. Jika π=22/7, jari-jari roda tersebut adalah ....",o:["14 cm","21 cm","28 cm","56 cm"],a:2,e:"K=2πr. 176=2×22/7×r, sehingga r=28 cm."},
+{t:"Keliling dan Luas Lingkaran",q:"Taman berbentuk lingkaran berjari-jari 14 m. Luas taman adalah .... (π=22/7)",o:["154 m²","308 m²","616 m²","1.232 m²"],a:2,e:"L=πr²=22/7×14×14=616 m²."},
+{t:"Keliling dan Luas Lingkaran",q:"Sebuah lingkaran memiliki luas 154 cm². Jika π=22/7, diameternya adalah ....",o:["7 cm","14 cm","21 cm","28 cm"],a:1,e:"154=22/7×r², maka r²=49 dan r=7 cm. Diameter=14 cm."},
+{t:"Busur dan Juring",q:"Lingkaran berjari-jari 14 cm memiliki sudut pusat 90°. Panjang busurnya (π=22/7) adalah ....",o:["11 cm","22 cm","44 cm","88 cm"],a:1,e:"Panjang busur = 90/360 × 2πr = 1/4 × 88 = 22 cm."},
+{t:"Busur dan Juring",q:"Jari-jari lingkaran 21 cm dan sudut pusat 120°. Panjang busurnya (π=22/7) adalah ....",o:["22 cm","33 cm","44 cm","66 cm"],a:2,e:"s = 120/360 × 2×22/7×21 = 1/3×132 = 44 cm."},
+{t:"Busur dan Juring",q:"Luas juring dengan jari-jari 14 cm dan sudut pusat 90° adalah .... (π=22/7)",o:["77 cm²","154 cm²","308 cm²","616 cm²"],a:1,e:"L juring = 90/360 × πr² = 1/4 × 616 = 154 cm²."},
+{t:"Busur dan Juring",q:"Sebuah juring memiliki sudut pusat 60° dan jari-jari 21 cm. Luasnya (π=22/7) adalah ....",o:["115,5 cm²","231 cm²","462 cm²","693 cm²"],a:1,e:"L=60/360×22/7×21²=1/6×1.386=231 cm²."},
+{t:"Busur dan Juring",q:"Panjang busur suatu lingkaran 15,4 cm. Jika keliling lingkaran 61,6 cm, besar sudut pusatnya adalah ....",o:["45°","60°","90°","120°"],a:2,e:"Perbandingan busur terhadap keliling = 15,4/61,6=1/4. Sudut pusat=1/4×360°=90°."},
+{t:"Luas Tembereng",q:"Tembereng kecil dibentuk oleh juring 90° pada lingkaran berjari-jari 14 cm. Luas tembereng adalah .... (π=22/7)",o:["42 cm²","56 cm²","98 cm²","154 cm²"],a:2,e:"Luas juring=154 cm². Luas segitiga dari dua jari-jari yang saling tegak lurus=1/2×14×14=98 cm². Tembereng=154−98=56 cm².",fix:1},
+{t:"Luas Tembereng",q:"Sebuah lingkaran berjari-jari 10 cm membentuk juring 90°. Jika luas juring 78,5 cm² dan luas segitiga di dalamnya 50 cm², luas tembereng adalah ....",o:["18,5 cm²","28,5 cm²","50 cm²","128,5 cm²"],a:1,e:"Luas tembereng = luas juring − luas segitiga = 78,5−50=28,5 cm²."},
+{t:"Luas Tembereng",q:"Luas juring suatu lingkaran 154 cm². Luas segitiga yang dibatasi dua jari-jari dan tali busur adalah 98 cm². Luas temberengnya ....",o:["56 cm²","98 cm²","154 cm²","252 cm²"],a:0,e:"Luas tembereng = 154−98=56 cm²."},
+{t:"Unsur Bangun Ruang Sisi Lengkung",q:"Bangun ruang sisi lengkung yang memiliki 2 sisi datar berbentuk lingkaran dan 1 sisi lengkung disebut ....",o:["Bola","Kerucut","Tabung","Prisma"],a:2,e:"Tabung memiliki dua alas/tutup berbentuk lingkaran dan satu selimut lengkung."},
+{t:"Unsur Bangun Ruang Sisi Lengkung",q:"Bangun ruang yang memiliki satu alas lingkaran, satu titik puncak, dan satu selimut lengkung adalah ....",o:["Tabung","Kerucut","Bola","Kubus"],a:1,e:"Kerucut memiliki alas lingkaran, titik puncak, jari-jari, tinggi, garis pelukis, dan selimut."},
+{t:"Unsur Bangun Ruang Sisi Lengkung",q:"Bola memiliki ....",o:["2 rusuk dan 1 titik sudut","1 sisi lengkung tanpa rusuk dan titik sudut","2 sisi datar dan 1 sisi lengkung","1 alas dan 1 titik puncak"],a:1,e:"Bola hanya memiliki satu sisi lengkung serta tidak memiliki rusuk maupun titik sudut."},
+{t:"Unsur Bangun Ruang Sisi Lengkung",q:"Garis dari titik puncak kerucut ke titik pada keliling alas disebut ....",o:["Tinggi","Diameter","Garis pelukis","Jari-jari"],a:2,e:"Garis pelukis menghubungkan titik puncak kerucut dengan titik pada keliling alas."},
+{t:"Tabung",q:"Tabung memiliki jari-jari 7 cm dan tinggi 10 cm. Volumenya (π=22/7) adalah ....",o:["440 cm³","770 cm³","1.540 cm³","3.080 cm³"],a:1,e:"V=πr²t=22/7×49×10=1.540 cm³.",fix:2},
+{t:"Tabung",q:"Luas selimut tabung berjari-jari 7 cm dan tinggi 12 cm adalah .... (π=22/7)",o:["264 cm²","440 cm²","528 cm²","616 cm²"],a:2,e:"L selimut=2πrt=2×22/7×7×12=528 cm²."},
+{t:"Tabung",q:"Luas permukaan tabung tertutup dengan jari-jari 7 cm dan tinggi 10 cm adalah .... (π=22/7)",o:["440 cm²","616 cm²","748 cm²","880 cm²"],a:2,e:"LP=2πr(r+t)=2×22/7×7×17=748 cm²."},
+{t:"Tabung",q:"Sebuah drum berbentuk tabung berdiameter 14 cm dan tinggi 20 cm. Volume drum adalah .... (π=22/7)",o:["1.540 cm³","2.200 cm³","3.080 cm³","6.160 cm³"],a:2,e:"r=7 cm. V=πr²t=22/7×49×20=3.080 cm³."},
+{t:"Tabung",q:"Volume tabung 1.540 cm³ dan jari-jari 7 cm. Tinggi tabung adalah .... (π=22/7)",o:["5 cm","10 cm","14 cm","20 cm"],a:1,e:"t=V/(πr²)=1.540/(22/7×49)=1.540/154=10 cm."},
+{t:"Kerucut",q:"Kerucut memiliki jari-jari 7 cm dan tinggi 12 cm. Volumenya (π=22/7) adalah ....",o:["308 cm³","616 cm³","1.232 cm³","1.848 cm³"],a:1,e:"V=1/3πr²t=1/3×22/7×49×12=616 cm³."},
+{t:"Kerucut",q:"Jari-jari kerucut 7 cm dan garis pelukis 25 cm. Tingginya adalah ....",o:["18 cm","20 cm","24 cm","32 cm"],a:2,e:"Dengan Pythagoras: t²=25²−7²=625−49=576, maka t=24 cm."},
+{t:"Kerucut",q:"Luas selimut kerucut dengan jari-jari 7 cm dan garis pelukis 10 cm adalah .... (π=22/7)",o:["154 cm²","220 cm²","374 cm²","440 cm²"],a:1,e:"L selimut=πrs=22/7×7×10=220 cm²."},
+{t:"Kerucut",q:"Luas permukaan kerucut berjari-jari 7 cm dan garis pelukis 10 cm adalah .... (π=22/7)",o:["220 cm²","300 cm²","374 cm²","440 cm²"],a:2,e:"LP=πr(r+s)=22/7×7×(7+10)=374 cm²."},
+{t:"Bola",q:"Bola memiliki jari-jari 7 cm. Volumenya (π=22/7) adalah ....",o:["616 cm³","1.232 cm³","1.437⅓ cm³","2.156 cm³"],a:2,e:"V=4/3πr³=4/3×22/7×343=1.437⅓ cm³."},
+{t:"Bola",q:"Luas permukaan bola dengan jari-jari 7 cm adalah .... (π=22/7)",o:["154 cm²","308 cm²","616 cm²","1.232 cm²"],a:2,e:"LP=4πr²=4×22/7×49=616 cm²."},
+{t:"Bola",q:"Diameter sebuah bola 14 cm. Volume bola (π=22/7) adalah ....",o:["143⅔ cm³","616 cm³","1.437⅓ cm³","2.874⅔ cm³"],a:2,e:"r=7 cm. V=4/3×22/7×7³=1.437⅓ cm³."},
+{t:"Bola",q:"Luas permukaan sebuah bola adalah 1.256 cm². Jika π=3,14, jari-jari bola adalah ....",o:["5 cm","10 cm","15 cm","20 cm"],a:1,e:"4πr²=1.256. r²=1.256/12,56=100, sehingga r=10 cm."}
+];
+// Correct two intentionally corrected indices for explanatory consistency
+questions[0].a=1; questions[0].e="Misalkan b = harga buku dan p = harga pensil. 2b+p=11.000 dan b+2p=10.000. Diperoleh b=4.000 dan p=3.000. Jadi harga 1 buku Rp4.000.";
+questions[2].a=1; questions[2].e="3r+2s=19.000 dan 2r+s=11.000. Kalikan persamaan kedua dengan 2: 4r+2s=22.000. Selisih memberi r=3.000. Jadi harga 1 roti Rp3.000.";
+questions[19].a=1; questions[19].e="Luas juring=154 cm². Luas segitiga=98 cm². Luas tembereng=154−98=56 cm².";
+questions[26].a=2; questions[26].e="V=πr²t=22/7×49×10=1.540 cm³.";
+let index=0, score=0, answered=false, chosen=[], student="", className="";
+function startGame(){
+ student=document.getElementById("student").value.trim();className=document.getElementById("className").value.trim();
+ if(!student||!className){alert("Mohon isi nama siswa dan kelas terlebih dahulu.");return;}
+ document.getElementById("studentLabel").textContent=student+" • "+className;
+ document.getElementById("start").classList.add("hidden");document.getElementById("quiz").classList.remove("hidden");renderQuestion();
+}
+function renderQuestion(){
+ answered=false;let q=questions[index];
+ document.getElementById("counter").textContent=`Soal ${index+1} dari ${questions.length}`;
+ document.getElementById("progress").style.width=(index/questions.length*100)+"%";
+ document.getElementById("topic").textContent=q.t;
+ document.getElementById("question").textContent=q.q;
+ document.getElementById("feedback").className="feedback hidden";
+ document.getElementById("next").disabled=true;
+ document.getElementById("next").textContent=index===questions.length-1?"Lihat hasil 🏆":"Soal berikutnya →";
+ let box=document.getElementById("options");box.innerHTML="";
+ q.o.forEach((opt,i)=>{let b=document.createElement("button");b.className="option";b.textContent=String.fromCharCode(65+i)+". "+opt;b.onclick=()=>choose(i);box.appendChild(b);});
+}
+function choose(i){
+ if(answered)return;answered=true;let q=questions[index], correct=i===q.a;
+ chosen[index]=i;if(correct)score++;
+ document.querySelectorAll(".option").forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add("correct");if(j===i&&!correct)b.classList.add("wrong");});
+ let f=document.getElementById("feedback");f.className="feedback "+(correct?"good":"bad");
+ f.innerHTML=(correct?"<b>Benar! Hebat! 🎉</b>":"<b>Belum tepat. Tetap semangat!</b>")+"<br>"+q.e;
+ document.getElementById("next").disabled=false;
+}
+function nextQuestion(){if(!answered)return;index++;if(index<questions.length)renderQuestion();else finish();}
+function finish(){
+ document.getElementById("quiz").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
+ let points=score*2.5;
+ document.getElementById("resultName").textContent=student+" • "+className;
+ document.getElementById("score").textContent=points.toFixed(1).replace(".",",")+"/100";
+ let grade=points>=90?"Sangat Baik 🌟":points>=80?"Baik 👍":points>=70?"Cukup 🙂":"Tetap semangat, terus berlatih 💪";
+ document.getElementById("grade").textContent=grade;
+ document.getElementById("summary").textContent=`Jawaban benar: ${score} dari 40 soal. Jawaban salah: ${40-score}.`;
+ document.getElementById("progress").style.width="100%";
+}
+function showReview(){
+ let r=document.getElementById("review");r.classList.toggle("hidden");
+ if(!r.dataset.loaded){r.innerHTML="<h3>Pembahasan dan jawaban</h3>"+questions.map((q,i)=>`<div class="review"><b>${i+1}. ${q.t}</b><br>${q.q}<br><b>Jawaban: ${String.fromCharCode(65+q.a)}. ${q.o[q.a]}</b><br>${q.e}</div>`).join("");r.dataset.loaded="1";}
+}
+function restartGame(){index=0;score=0;answered=false;chosen=[];document.getElementById("result").classList.add("hidden");document.getElementById("review").classList.add("hidden");document.getElementById("review").dataset.loaded="";document.getElementById("start").classList.remove("hidden");document.getElementById("student").value="";document.getElementById("className").value="";}
+</script>
+</body></html>
